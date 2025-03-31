@@ -16,6 +16,8 @@ pub enum Error {
     #[cfg(feature = "native-tls")]
     #[error("native-tls error {0}")]
     NativeTls(#[from] monoio_native_tls::TlsError),
+    #[error("serde_urlencoded serialization error {0}")]
+    FormSerialize(#[from] serde_urlencoded::ser::Error),
     #[error("serde_json error {0}")]
     Json(#[from] serde_json::Error),
     #[error("H2 error {0}")]

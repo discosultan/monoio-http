@@ -87,6 +87,17 @@ where
         Ok(ClientResponse::new(resp))
     }
 
+    pub async fn send_form<T: serde::Serialize>(self, data: &T) -> crate::Result<ClientResponse> {
+        let body: Bytes = serde_urlencoded::to_string(data)?.into();
+        let builder = self.builder.header(
+            http::header::CONTENT_TYPE,
+            HeaderValue::from_static("application/x-www-form-urlencoded"),
+        );
+        let request = Self::build_request(builder, HttpBody::fixed_body(Some(body)))?;
+        let resp = self.client.send_request(request).await?;
+        Ok(ClientResponse::new(resp))
+    }
+
     pub async fn send_json<T: serde::Serialize>(self, data: &T) -> crate::Result<ClientResponse> {
         let body: Bytes = serde_json::to_vec(data)?.into();
         let builder = self.builder.header(
